@@ -6,7 +6,7 @@ author: "brompwnie"
 meta: "android hacking"
 ---
 
-Hello! In this blog post, I'll be sharing with you a recent experiment I did with Java and Kotlin Android applications. Kotlin is new to the Android space and is picking up momentum and with this in mind, I recently asked myself "I wonder how I am going to reverse Android applications built with Kotlin?". This question I feel is common amongst Android reversers because when you are targeting an Android application (APK), your approaches and tools will differ according to whether the app is using something like Apache Cordova, native Java or Kotlin. After dwelling on this for something, I decided to setup a small experiment which would allow me to see how some commonly used reversing tools would react to Kotlin applications. The remainder of this blog post describes what I did and the anomalies I observerd! Enjoy!
+Hello! In this blog post, I'll be sharing with you a recent experiment I did with Java and Kotlin Android applications. Kotlin is new to the Android space and is picking up momentum and with this in mind, I recently asked myself "I wonder how I am going to reverse Android applications built with Kotlin?". This question I feel is common amongst Android reversers because when you are targeting an Android application (APK), your approaches and tools will differ according to whether the app is using something like Apache Cordova, native Java or Kotlin. After dwelling on this for sometime, I decided to setup a small experiment, which would allow me to see how some commonly used reversing tools would react to Kotlin applications. The remainder of this blog post describes what I did and the anomalies I observerd! Enjoy!
 
 ## Step 1: Create A Java and Kotlin Android Application
 In this step, I wanted to create a basic AKA vanilla Android application in Java and Kotlin so that I could have two applications to compare against. I wanted the applications to be simple and utilize as many defaults as possible. For this step I created the applications in Android studio and used the defaults. I called the applications "HelloJava" and "HelloKotlin" respectively.
@@ -38,7 +38,12 @@ Here we see our first anomaly, the Kotlin app is larger in size(1.8MB) than that
 
 ![APKS](/assets/dexSize.png)
 
-To get this point, I unzipped each APK with the following command "unzip HelloKotlinNotObfuscated.apk -d HelloKotlinNotObfuscated" which gave me a folder with all the raw contents of the APKs, more specifically, the DEX files.
+To get this point, I unzipped each APK with the following command 
+
+```html
+unzip HelloKotlinNotObfuscated.apk -d HelloKotlinNotObfuscated
+```
+which gave me a folder with all the raw contents of the APKs, more specifically, the DEX files.
 
 ## Step 5: Lets Reverse Some Code
 There are many ways to reverse Android applications and at this step, we are going to look at two tools, Jadx and APKTOOL. Both have their strengths and weaknesses and are a good starting point if you want to reverse Android applications. So how do these two tools function when we feed them the Java and Kotlin applications? Currently we have two APK's which means we don't have much to work with unless you like staring at byte code (which some do and nothing wrong with that) but lets use Jadx to see what we can get.
@@ -63,7 +68,11 @@ Step 5 only looked at the applications using a single tool to get a single view 
 
 ![Proguard](/assets/apktoolKotlin.png)
 
-The poorly cropped images above show the results of running the following apktool command to get the SMALI for each application, "apktool d HelloJavaNotObfuscated.apk". After running this command, apktool by default will create a directory of the decompiled resources in a folder which is named after the name of the targeted APK i.e HelloJavaNotObfuscated. As we can see from the images above, apktool created an extra folder for the Kotlin application called "Kotlin". But that's not what we want to look at right now, we want to look at the MainActivity files for each application.
+The poorly cropped images above show the results of running the following apktool command to get the SMALI for each application, 
+```html
+apktool d HelloJavaNotObfuscated.apk
+```
+ After running this command, apktool by default will create a directory of the decompiled resources in a folder which is named after the name of the targeted APK i.e HelloJavaNotObfuscated. As we can see from the images above, apktool created an extra folder for the Kotlin application called "Kotlin". But that's not what we want to look at right now, we want to look at the MainActivity files for each application.
 
 ![Proguard](/assets/smaliFolderK.png)
 
@@ -118,4 +127,12 @@ The image above shows the contents of the directories "com.brompwnie.java" and "
 To summarise our observations, we can see that unobfuscated Kotlin and Java applications will produce different output (classes.dex and APK's) but obfuscated Kotlin applications will produce Java like applications. This is particularly interesting as it can be assumed that if an application is developed using Kotlin, it can't be decompiled because only Java tools exist and Kotlin is "different". The results above show that this is not always the case and Android developers should take note of how their code will be seen by hackers and what they can do to protect their code, if need be.
 
 The reasons for these observed anomalies are interesting and will be discussed further in part 2 of this blog post. Until then, if you made it this far, thanks for reading!
+
+### Useful Links
+
+[https://ibotpeaches.github.io/Apktool/](https://ibotpeaches.github.io/Apktool/)
+
+[https://github.com/skylot/jadx](https://github.com/skylot/jadx)
+
+[https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html)
 

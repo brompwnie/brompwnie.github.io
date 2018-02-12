@@ -5,6 +5,7 @@ description: > # this means to ignore newlines until "baseurl:"
   Digital alchemist,attempting to make the world a better place bit-by-bit. 
   This is a place where I try to share some of my ideas and digital adventures.
 
+google_analytics: UA-113944676-1
 
 feed_meta: test
 # social links
